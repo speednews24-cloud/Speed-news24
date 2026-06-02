@@ -1,0 +1,17 @@
+/* Yeh tumhari design file hai */
+.app-container {
+  background-color: #000;
+  color: #fff;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+.news-card {
+  background: #1a1a1a;
+  border-left: 4px solid #ff0000;
+  padding: 15px;
+  margin: 15px auto;
+  max-width: 600px;
+  border-radius: 8px;
+  text-align: left;
+}

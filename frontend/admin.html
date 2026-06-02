@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed News 24 - Admin</title>
+    <style>
+        body { font-family: sans-serif; background: #111; color: #fff; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; display: none; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #222; color: #fff; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; background: #e50914; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        #login { max-width: 300px; margin: 100px auto; background: #222; padding: 20px; border-radius: 8px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="login">
+        <h2>Admin Login</h2>
+        <input type="password" id="passInput" placeholder="Password...">
+        <button onclick="checkPassword()">Login</button>
+    </div>
+
+    <div id="admin-panel" class="container">
+        <h2>Add Breaking News</h2>
+        <input type="text" id="title" placeholder="Title">
+        <textarea id="description" rows="4" placeholder="Description"></textarea>
+        <button onclick="addNews()">POST NEWS</button>
+    </div>
+
+    <script>
+        const API_URL = 'https://speed-news24.onrender.com/api/news';
+
+        function checkPassword() {
+            let pass = document.getElementById('passInput').value;
+            // Password check: yahan 'speed24' (small letters) hi daalein
+            if (pass.toLowerCase() === "speed24") { 
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+            } else {
+                alert("Galat Password!");
+            }
+        }
+
+        async function addNews() {
+            let title = document.getElementById('title').value;
+            let description = document.getElementById('description').value;
+            let res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, description })
+            });
+            if(res.ok) alert("News Add Ho Gayi!");
+            else alert("Error!");
+        }
+    </script>
+</body>
+</html>
