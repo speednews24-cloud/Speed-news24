@@ -3,130 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speed News 24 - Admin Panel</title>
+    <title>Speed News 24 - Admin</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #111; color: #fff; padding: 20px; text-align: center; }
-        .container { max-width: 500px; margin: 0 auto; display: none; text-align: left; }
+        body { font-family: sans-serif; background: #111; color: #fff; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; display: none; }
         input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #222; color: #fff; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; background: #e50914; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .news-item { background: #222; padding: 15px; margin: 10px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
-        .news-content { max-width: 75%; }
-        .news-item h4 { margin: 0 0 5px 0; color: #ff3333; }
-        .news-item p { margin: 0; color: #ccc; font-size: 14px; }
-        .delete-btn { background: #8b0000; width: auto; padding: 8px 15px; margin: 0; }
-        #login { max-width: 300px; margin: 100px auto; background: #222; padding: 20px; border-radius: 8px; border: 1px solid #333; }
+        button { width: 100%; background: #e50914; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        #login { max-width: 300px; margin: 100px auto; background: #222; padding: 20px; border-radius: 8px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <!-- बेहतर और पक्का लॉगिन स्क्रीन -->
     <div id="login">
-        <h2>Speed News 24 Admin</h2>
-        <input type="password" id="passInput" placeholder="Password yahan likhein...">
-        <button onclick="checkPassword()">Login Karein</button>
+        <h2>Admin Login</h2>
+        <input type="password" id="passInput" placeholder="Password...">
+        <button onclick="checkPassword()">Login</button>
     </div>
 
-    <!-- मुख्य एडमिन पैनल -->
     <div id="admin-panel" class="container">
         <h2>Add Breaking News</h2>
-        <input type="text" id="title" placeholder="News Title (हेडलाइन)">
-        <textarea id="description" rows="4" placeholder="News Description (पूरी खबर)"></textarea>
-        <button onclick="addNews()">POST NEWS (लाइव करें)</button>
-
-        <hr style="border: 1px solid #333; margin: 30px 0;">
-
-        <h2>Live News List (Delete karne ke liye)</h2>
-        <div id="news-list">Loading news...</div>
+        <input type="text" id="title" placeholder="Title">
+        <textarea id="description" rows="4" placeholder="Description"></textarea>
+        <button onclick="addNews()">POST NEWS</button>
     </div>
 
     <script>
         const API_URL = 'https://speed-news24.onrender.com/api/news';
 
-        // अब पासवर्ड बॉक्स से चेक होगा और छोटी-बड़ी ABC ka farq nahi padega
         function checkPassword() {
             let pass = document.getElementById('passInput').value;
-            if (pass && pass.trim().toLowerCase() === "speed24") { 
+            // Password check: yahan 'speed24' (small letters) hi daalein
+            if (pass.toLowerCase() === "speed24") { 
                 document.getElementById('login').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'block';
-                fetchNews();
             } else {
-                alert("Galat Password! Sahi password 'Speed24' hai.");
-            }
-        }
-
-        async function fetchNews() {
-            try {
-                let res = await fetch(API_URL);
-                let data = await res.json();
-                let list = document.getElementById('news-list');
-                list.innerHTML = '';
-                
-                if(data.length === 0) {
-                    list.innerHTML = '<p>Koi news nahi hai.</p>';
-                    return;
-                }
-
-                data.forEach(item => {
-                    list.innerHTML += `
-                        <div class="news-item">
-                            <div class="news-content">
-                                <h4>${item.title}</h4>
-                                <p>${item.description}</p>
-                            </div>
-                            <button class="delete-btn" onclick="deleteNews('${item._id}')">Delete</button>
-                        </div>
-                    `;
-                });
-            } catch (err) {
-                document.getElementById('news-list').innerHTML = 'News load karne me error aaya.';
+                alert("Galat Password!");
             }
         }
 
         async function addNews() {
             let title = document.getElementById('title').value;
             let description = document.getElementById('description').value;
-            
-            if(!title || !description) {
-                return alert("Title aur Description dono likhna zaroori hai!");
-            }
-
-            try {
-                let res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, description })
-                });
-                
-                if(res.ok) {
-                    alert("News Successfully Add Ho Gayi!");
-                    document.getElementById('title').value = '';
-                    document.getElementById('description').value = '';
-                    fetchNews();
-                } else {
-                    alert("Error posting news");
-                }
-            } catch (err) {
-                alert("Server se connect nahi ho paya!");
-            }
-        }
-
-        async function deleteNews(id) {
-            if(!confirm("Kya aap sach me ye news delete karna chahte hain?")) return;
-            
-            try {
-                let res = await fetch(`${API_URL}/${id}`, {
-                    method: 'DELETE'
-                });
-                
-                if(res.ok) {
-                    alert("News Deleted!");
-                    fetchNews();
-                } else {
-                    alert("Delete karne mein error aaya!");
-                }
-            } catch (err) {
-                alert("Server error!");
-            }
+            let res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, description })
+            });
+            if(res.ok) alert("News Add Ho Gayi!");
+            else alert("Error!");
         }
     </script>
 </body>
